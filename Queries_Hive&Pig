@@ -1,0 +1,49 @@
+----------------------------------------------------------------------------------------------
+					Hive Queries for OLYMPIC Data
+----------------------------------------------------------------------------------------------
+
+1. Using the dataset list the total number of medals won by each country in swimming.
+Query:Select country,sum(total )as totalMedalsfrom olympic where sport='Swimming' group by country order by totalMedals desc;
+
+2)Display real life number of medals India won year wise.
+Query:Select year,sum(total) from olympic where country=”India” group by year;
+
+3)Find the total number of medals each country won display the name along with total medals.
+Query:Select country,sport,sum(total) from olympic group by country,sport;
+
+4)Find the real life number of gold medals each country won.
+Query:Select year,sum(gold)as TotalGoldMedals from olympic group by year;
+
+5)Which country got medals for Shooting, year wise classification?
+Query:Select country,year from olympic where sport=”Shooting” ;
+=========================================================================================================================================
+					Pig Queries for OLYMPIC DATA
+----------------------------------------------------------------------------------------
+olympic = load '/home/hduser/Documents/Projects_Data/olympic/olympic_data.csv' using PigStorage() as (name,age:int,country,year,closing,sport,gold:int,silver:int,bronze:int,total:int);
+
+1. Using the dataset list the total number of medals won by each country in swimming.
+Pig-Script:	shyam = foreach olympic generate country,total,sport; 
+		filter1 = Filter shyam by sport == 'Swimming';
+		groupby = group filter1 by country;
+		sumtotalMedals = foreach groupby generate group,SUM(filter1.total);
+
+2)Display real life number of medals India won year wise.
+Pig-Script:	shyam = foreach olympic generate country,year,total;
+		filter1 = FILTER shyam by country == 'India';
+		groupby =group filter1 by year;
+		noofMeadals = foreach groupby generate group,SUM(filter1.total);
+
+4)Find the real life number of gold medals each country won.
+Pig-Script:	shyam = foreach olympic generate country,gold;
+		groupby = group shyam by country;
+		goldMedals = foreach groupby generate group,SUM(shyam.gold);
+
+5)Which country got medals for Shooting, year wise classification?
+Pig-Script:	shyam = foreach olympic generate country,year,total;
+		filter1 = FILTER shyam by sport == 'Shooting';
+		groupby =group filter1 by year;
+		noofMeadals = foreach groupby generate group,SUM(filter1.total);
+==========================================================================================================================================
+
+
+
